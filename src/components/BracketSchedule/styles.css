@@ -1,0 +1,112 @@
+.BracketSchedule-container {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.BracketSchedule-round-container {
+  width: 1000px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.BracketSchedule-roundName-container {
+  height: 35px;
+  background-color: #ff7324;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.BracketSchedule-roundMatch-container {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.BracketSchedule-roundMatch-time-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 15px;
+  padding-right: 15px;
+  flex-direction: column;
+}
+
+.BracketSchedule-roundMatch-orderNumber-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.BracketSchedule-roundMatch-name-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.BracketSchedule-roundMatch-consequent-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  border-radius: 10px;
+}
+
+.BracketSchedule-roundMatch-consequent1-container {
+  background-color: gold;
+}
+
+.BracketSchedule-roundMatch-consequent2-container {
+  background-color: silver;
+}
+
+.BracketSchedule-roundMatch-consequent3-container {
+    background-color: #B87333;
+}
+
+.BracketSchedule-roundMatch-consequentin10-container {
+  background-color: white;
+}
+
+.BracketSchedule-roundMatch-consequentother-container {
+  background-color: black;
+}
+
+.BracketSchedule-roundMatch-result1-text {
+  color: black;
+}
+
+.BracketSchedule-roundMatch-result2-text {
+  color: black;
+}
+
+.BracketSchedule-roundMatch-result3-text {
+  color: black;
+}
+
+.BracketSchedule-roundMatch-resultin10-text {
+  color: black;
+}
+
+.BracketSchedule-roundMatch-resultother-text {
+  color: white;
+}
+
+.BracketSchedule-roundMatch-result-text {
+  font-weight: bold;
+}
+
+.BracketSchedule-roundMatch-consequentMiddle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+}

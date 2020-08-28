@@ -1,0 +1,25 @@
+.Modal-button-container {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Modal-button-container :hover {
+  cursor: pointer;
+}
+
+.Modal-button {
+  height: 35px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: #fe7324;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.Modal-content-container {
+  flex: 1;
+}

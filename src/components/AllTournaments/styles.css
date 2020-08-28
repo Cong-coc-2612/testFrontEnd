@@ -1,0 +1,17 @@
+.AllTournaments-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.AllTournaments-container-container {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.AllTournaments-header-text {
+  font-weight: bold;
+  font-size: 30px;
+}

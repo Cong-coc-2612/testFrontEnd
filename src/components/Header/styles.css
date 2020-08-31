@@ -1,6 +1,6 @@
 .Header-container {
   height: 50px;
-  background-color: #272a33;
+  background-color: #000C1C;
   display: flex;
   flex-direction: row;
   position: fixed;
@@ -58,7 +58,7 @@
 .Option-container :hover {
   background-color: black;
   cursor: pointer;
-  color: #ff7324;
+  color: #002C69;
 }
 
 .Link-text {
@@ -68,7 +68,7 @@
 }
 
 .Link-text-selected {
-  color: #ff7324 !important;
+  color: #006FFF !important;
 }
 
 .Link-text-no-hover {
@@ -82,7 +82,7 @@
 }
 
 .SignUp-Button-container {
-  background-color: orange;
+  background-color: #0046A8;
   border-radius: 15px;
   height: 30px;
   padding-left: 20px;
@@ -131,7 +131,7 @@
 }
 
 .UserOption-dropdown-item-container1 {
-  background-color: #272a33;
+  background-color: #000C1C;
 }
 
 .UserOption-dropdown-item-container2 {

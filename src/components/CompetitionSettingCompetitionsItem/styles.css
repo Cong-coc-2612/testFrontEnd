@@ -4,6 +4,15 @@
   margin-bottom: 25px;
 }
 
+.CompetitionSettingCompetitionsItem-info-container-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.CompetitionSettingCompetitionsItem-team-setting-container :hover {
+  cursor: pointer;
+}
+
 .CompetitionSettingCompetitionsItem-container :hover {
   cursor: pointer;
 }
@@ -89,7 +98,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ff7324;
+  background-color: #002C69;
   width: 50%;
   height: 60%;
   border-radius: 10px;
@@ -143,7 +152,7 @@
 }
 
 .CompetitionSettingCompetitionsItem-button-container {
-  background-color: #ff7324;
+  background-color: #002C69;
   margin-top: 25px;
   margin-bottom: 25px;
   border-radius: 10px;

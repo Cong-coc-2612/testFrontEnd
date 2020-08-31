@@ -1,8 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { IBigRequest, IParams } from 'interfaces/common';
+import { IState } from 'redux-saga/reducers';
+import { queryBracketRankInfo } from './actions';
 import './styles.css';
 
 interface IBracketRankProps extends React.ClassAttributes<BracketRank> {
+  competitionId: number;
+  finalStage: boolean;
+  bracketRankInfo: IParams | null;
+
+  queryBracketRankInfo(params: IBigRequest): void;
 }
 
 interface IBracketRankState {
@@ -15,7 +23,23 @@ class BracketRank extends React.Component<IBracketRankProps, IBracketRankState> 
     };
   }
 
+  componentDidMount() {
+    this.requestData();
+  }
+
+  private requestData = () => {
+    const params: IBigRequest = {
+      path: '',
+      param: {
+        competitionId: this.props.competitionId,
+      },
+      data: {},
+    };
+    this.props.queryBracketRankInfo(params);
+  }
+
   render() {
+    console.log('bracketRankInfo', this.props.bracketRankInfo);
     return (
       <div className="BracketRank-container">
         <div className="BracketRank-item-container BracketRank-menuItem-container">
@@ -57,7 +81,13 @@ class BracketRank extends React.Component<IBracketRankProps, IBracketRankState> 
   }
 }
 
+const mapStateToProps = (state: IState) => {
+  return {
+    bracketRankInfo: state.bracketRankInfo,
+  };
+};
+
 export default connect(
-  null,
-  null
+  mapStateToProps,
+  { queryBracketRankInfo }
 )(BracketRank);

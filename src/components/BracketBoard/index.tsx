@@ -169,7 +169,7 @@ class BracketBoard extends React.Component<IBracketBoardProps, IBracketBoardStat
                         <p>Bảng {item.tableName}</p>
                       </div>
                       <div className="BracketBoard-container">
-                        {(item.listRound != null && (item.listRound as IParams[]).length > 0 ? 
+                        {(item.listRound != null && (item.listRound as IParams[]).length > 0 ?
                           (item.listRound as IParams[]).map((item2, index2) =>
                             (<BracketRound competitionId={this.props.competitionId} index={index2} info={item2} key={index2} roundNo={index2 + 1} totalRound={(item.listRound as IParams[]).length} />)) :
                           <p>Không thể lập lịch cho bảng này!</p>
@@ -177,6 +177,40 @@ class BracketBoard extends React.Component<IBracketBoardProps, IBracketBoardStat
                         }
                       </div>
                     </div>)}
+                </ReduxBlockUi>
+              );
+            } else if ((this.props.bracketBoardInfo.groupStage as IParams).listTableDE != null) {
+              return (
+                <ReduxBlockUi
+                  tag="div"
+                  block={SWAP_TWO_TEAM_IN_BRACKET}
+                  unblock={[SWAP_TWO_TEAM_IN_BRACKET_SUCCESS, SWAP_TWO_TEAM_IN_BRACKET_FAILED]}
+                >
+                  <div className={'BracketBoard-text'}>
+                    <p>Bạn có thể đổi chỗ các đội thi đấu bằng cách bấm vào 2 đội, Thay đổi này chỉ có thể thực hiện khi giải đấu chưa bắt đầu</p>
+                  </div>
+                  {((this.props.bracketBoardInfo.groupStage as IParams).listTableDE as IParams[]).map((item, index) =>
+                    <div className="BracketBoard-container-container" key={index}>
+                      <div className="BracketBoard-container">
+                        <p>Bảng {item.tableName}</p>
+                      </div>
+                      <div className="BracketBoard-container">
+                        {(item.listWinRound != null && (item.listWinRound as IParams[]).length > 0 ?
+                          (item.listWinRound as IParams[]).map((item2, index2) =>
+                            (<BracketRound competitionId={this.props.competitionId} index={index2} info={item2} key={index2} roundNo={index2 + 1} totalRound={(item.listWinRound as IParams[]).length} />)) :
+                          <p>Không thể lập lịch cho bảng này!</p>
+                        )
+                        }
+                      </div>
+                      <div className="BracketBoard-container">
+                        {(item.listLoseRound != null && (item.listLoseRound as IParams[]).length > 0 &&
+                          (item.listLoseRound as IParams[]).map((item2, index2) =>
+                            (<BracketRound competitionId={this.props.competitionId} index={index2} info={item2} key={index2} roundNo={index2 + 1} totalRound={(item.listLoseRound as IParams[]).length} />))
+                        )
+                        }
+                      </div>
+                    </div>
+                  )}
                 </ReduxBlockUi>
               );
             }

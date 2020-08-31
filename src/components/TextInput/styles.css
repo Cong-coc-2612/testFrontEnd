@@ -2,7 +2,7 @@
   --omrs-color-ink-lowest-contrast: rgba(47, 60, 85, 0.18);
   --omrs-color-ink-low-contrast: rgba(60, 60, 67, 0.3);
   --omrs-color-ink-medium-contrast: rgba(19, 19, 21, 0.6);
-  --omrs-color-interaction: #ff7324;
+  --omrs-color-interaction: #ACBEE8;
   --omrs-color-interaction-minus-two: rgba(73, 133, 224, 0.12);
   --omrs-color-danger: #b50706;
   --omrs-color-bg-low-contrast: #eff1f2;
@@ -44,7 +44,7 @@ div.omrs-input-group {
   top: 0.9375rem;
   left: 0.875rem;
   line-height: 147.6%;
-  color: #ff7324;
+  color: #ACBEE8;
   transition: top .2s;
 }
 

@@ -120,7 +120,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
                 </div>
                 <div className="Login-option-container-item Login-option-container-item1">
                   <Link to={'/forgotPassword'} style={{ textDecoration: 'none' }}>
-                    <p className="Forgot-password">Quên mật khẩu</p>
+                    <p className="Forgot-password2">Quên mật khẩu</p>
                   </Link>
                 </div>
               </div>

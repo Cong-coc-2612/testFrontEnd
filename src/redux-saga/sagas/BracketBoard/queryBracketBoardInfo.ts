@@ -18,6 +18,7 @@ let listRound: IParams[] = [];
 let listRRRound: IParams[] = [];
 let listTableRR: IParams[] = [];
 let listTableSE: IParams[] = [];
+let listTableDE: IParams[] = [];
 let listWinRound: IParams[] = [];
 let listLoseRound: IParams[] = [];
 
@@ -102,116 +103,151 @@ function* doQueryBracketBoardInfo(request: IRequest<IBigRequest>) {
     let tempVar: IParams = {};
     let tempVar2: IParams = {};
     if (response.data.error.MessageCode === 0) {
-      if (data.Schedule != null && data.Schedule.FinalStageSchedule != null) {
-        if (data.Schedule.FinalStageSchedule.FormatName === 'Round Robin') {
+      if (data.Schedule != null && data.Schedule.finalStageSchedule != null) {
+        if (data.Schedule.finalStageSchedule.formatName === 'Round Robin') {
           let listMatches: IParams[] = [];
-          for (let i = 1; i <= data.Schedule.FinalStageSchedule.TotalRound; i++) {
-            for (let j = 0; j < data.Schedule.FinalStageSchedule.Bracket.length; j++) {
-              if (data.Schedule.FinalStageSchedule.Bracket[j].roundNo === i) {
-                listMatches.push(data.Schedule.FinalStageSchedule.Bracket[j] as IParams);
+          for (let i = 1; i <= data.Schedule.finalStageSchedule.totalRound; i++) {
+            for (let j = 0; j < data.Schedule.finalStageSchedule.matches.length; j++) {
+              if (data.Schedule.finalStageSchedule.matches[j].roundNo === i) {
+                listMatches.push(data.Schedule.finalStageSchedule.matches[j] as IParams);
               }
             }
-            listRRRound.push({ listMatches } as unknown as IParams);
+            listRRRound.push({ listMatches, roundName: data.Schedule.finalStageSchedule.roundsNaming[i - 1] } as unknown as IParams);
             listMatches = [];
           }
           tempVar = { finalStage: { listRRRound } };
           listRRRound = [];
         } else {
-          if (data.Schedule.FinalStageSchedule.WinBranch == null) {
-            yield call(DFS, data.Schedule.FinalStageSchedule.Bracket.root, 1, data.Schedule.FinalStageSchedule.Bracket.root.data.roundNo);
+          if (data.Schedule.finalStageSchedule.winBranch == null) {
+            yield call(DFS, data.Schedule.finalStageSchedule.bracket.root, 1, data.Schedule.finalStageSchedule.bracket.root.data.roundNo);
             let listMatches: IParams[] = [];
-            for (let i = 1; i <= data.Schedule.FinalStageSchedule.Bracket.root.data.roundNo; i++) {
+            for (let i = 1; i <= data.Schedule.finalStageSchedule.bracket.root.data.roundNo; i++) {
               for (let j = 0; j < listMatchesFull.length; j++) {
                 if ((listMatchesFull[j].data as unknown as IParams).roundNo === i) {
                   listMatches.push(listMatchesFull[j] as IParams);
                 }
               }
-              listRound.push({ listMatches } as unknown as IParams);
+              listRound.push({ listMatches, roundName: data.Schedule.finalStageSchedule.roundsNaming[i - 1] } as unknown as IParams);
               listMatches = [];
             }
             tempVar = { finalStage: { listRound } };
             listRound = [];
             listMatchesFull = [];
           } else {
-            // 
-            yield call(DFS, data.Schedule.FinalStageSchedule.WinBranch.root, 2, data.Schedule.FinalStageSchedule.WinBranch.root.data.roundNo);
+            yield call(DFS, data.Schedule.finalStageSchedule.winBranch.root, 2, data.Schedule.finalStageSchedule.winBranch.root.data.roundNo);
             let listWinMatches = [];
-            for (let i = 1; i <= data.Schedule.FinalStageSchedule.WinBranch.root.data.roundNo; i++) {
+            for (let i = 1; i <= data.Schedule.finalStageSchedule.winBranch.root.data.roundNo; i++) {
               for (let j = 0; j < listWinMatchesFull.length; j++) {
                 if ((listWinMatchesFull[j].data as unknown as IParams).roundNo === i) {
                   listWinMatches.push(listWinMatchesFull[j]);
                 }
               }
-              listWinRound.push({ listWinMatches } as unknown as IParams);
+              listWinRound.push({ listWinMatches, roundName: data.Schedule.finalStageSchedule.winRoundsNaming[i - 1] } as unknown as IParams);
               listWinMatches = [];
             }
-            yield call(DFS, data.Schedule.FinalStageSchedule.LoseBranch.root, 3, data.Schedule.FinalStageSchedule.LoseBranch.root.data.roundNo, 1);
-            let listLoseMatches = [];
-            for (let i = 1; i <= data.Schedule.FinalStageSchedule.LoseBranch.root.data.roundNo; i++) {
-              for (let j = 0; j < listLoseMatchesFull.length; j++) {
-                if ((listLoseMatchesFull[j].data as unknown as IParams).roundNo === i) {
-                  listLoseMatches.push(listLoseMatchesFull[j]);
+            if (data.Schedule.finalStageSchedule.loseBranch.root != null) {
+              yield call(DFS, data.Schedule.finalStageSchedule.loseBranch.root, 3, data.Schedule.finalStageSchedule.loseBranch.root.data.roundNo, 1);
+              let listLoseMatches = [];
+              for (let i = 1; i <= data.Schedule.finalStageSchedule.loseBranch.root.data.roundNo; i++) {
+                for (let j = 0; j < listLoseMatchesFull.length; j++) {
+                  if ((listLoseMatchesFull[j].data as unknown as IParams).roundNo === i) {
+                    listLoseMatches.push(listLoseMatchesFull[j]);
+                  }
                 }
+                listLoseRound.push({ listLoseMatches, roundName: data.Schedule.finalStageSchedule.loseRoundsNaming[i - 1] } as unknown as IParams);
+                listLoseMatches = [];
               }
-              listLoseRound.push({ listLoseMatches } as unknown as IParams);
-              listLoseMatches = [];
             }
             tempVar = { finalStage: { listWinRound, listLoseRound } };
             listWinRound = [];
             listWinMatchesFull = [];
             listLoseRound = [];
             listLoseMatchesFull = [];
-            // 
           }
         }
 
       }
-      if (data.Schedule != null && data.Schedule.GroupStageSchedule != null) {
-        if (data.Schedule.GroupStageSchedule.FormatName === 'Round Robin') {
-          for (let i = 0; i < data.Schedule.GroupStageSchedule.Tables.length; i++) {
-            let listMatches: IParams[] = [];
-            if (data.Schedule.GroupStageSchedule.Tables[i].TotalRound != null) {
-              for (let j = 1; j <= data.Schedule.GroupStageSchedule.Tables[i].TotalRound; j++) {
-                if (data.Schedule.GroupStageSchedule.Tables[i].Bracket != null) {
-                  for (let k = 0; k < data.Schedule.GroupStageSchedule.Tables[i].Bracket.length; k++) {
-                    if (data.Schedule.GroupStageSchedule.Tables[i].Bracket[k].roundNo === j) {
-                      listMatches.push(data.Schedule.GroupStageSchedule.Tables[i].Bracket[k] as IParams);
+      if (data.Schedule != null && data.Schedule.hasGroupStage === true) {
+        if (data.Schedule.groupStageSchedule != null && Object.keys(data.Schedule.groupStageSchedule).length > 0) {
+          if (data.Schedule.groupStageSchedule.formatName === 'Round Robin') {
+            for (let i = 0; i < data.Schedule.groupStageSchedule.tables.length; i++) {
+              let listMatches: IParams[] = [];
+              if (data.Schedule.groupStageSchedule.tables[i].totalRound != null) {
+                for (let j = 1; j <= data.Schedule.groupStageSchedule.tables[i].totalRound; j++) {
+                  if (data.Schedule.groupStageSchedule.tables[i].matches != null) {
+                    for (let k = 0; k < data.Schedule.groupStageSchedule.tables[i].matches.length; k++) {
+                      if (data.Schedule.groupStageSchedule.tables[i].matches[k].roundNo === j) {
+                        listMatches.push(data.Schedule.groupStageSchedule.tables[i].matches[k] as IParams);
+                      }
                     }
+                    listRRRound.push({ listMatches, roundName: data.Schedule.groupStageSchedule.tables[i].roundsNaming[j - 1] } as IParams);
+                    listMatches = [];
                   }
-                  listRRRound.push({ listMatches } as IParams);
-                  listMatches = [];
                 }
               }
+              listTableRR.push({ listRRRound, tableName: data.Schedule.groupStageSchedule.tables[i].tableName } as IParams);
+              listRRRound = [];
             }
-            listTableRR.push({ listRRRound, tableName: data.Schedule.GroupStageSchedule.Tables[i].Table } as IParams);
-            listRRRound = [];
+            tempVar2 = { groupStage: { listTableRR } };
+            listTableRR = [];
+          } else {
+            if (data.Schedule.groupStageSchedule.formatName !== 'Double Elimination') {
+              for (let k = 0; k < data.Schedule.groupStageSchedule.tables.length; k++) {
+                if (data.Schedule.groupStageSchedule.tables[k].bracket != null) {
+                  yield call(DFS, data.Schedule.groupStageSchedule.tables[k].bracket.root, 1, data.Schedule.groupStageSchedule.tables[k].bracket.root.data.roundNo);
+                  let listMatches: IParams[] = [];
+                  for (let i = 1; i <= data.Schedule.groupStageSchedule.tables[k].bracket.root.data.roundNo; i++) {
+                    for (let j = 0; j < listMatchesFull.length; j++) {
+                      if ((listMatchesFull[j].data as IParams).roundNo === i) {
+                        listMatches.push(listMatchesFull[j] as IParams);
+                      }
+                    }
+                    listRound.push({ listMatches, roundName: data.Schedule.groupStageSchedule.tables[k].roundsNaming[i - 1] } as IParams);
+                    listMatches = [];
+                  }
+                }
+                listTableSE.push({ listRound, tableName: data.Schedule.groupStageSchedule.tables[k].tableName } as IParams);
+                listRound = [];
+                listMatchesFull = [];
+              }
+              tempVar2 = { groupStage: { listTableSE } };
+              listTableSE = [];
+            } else {
+              for (let k = 0; k < data.Schedule.groupStageSchedule.tables.length; k++) {
+                yield call(DFS, data.Schedule.groupStageSchedule.tables[k].winBranch.root, 2, data.Schedule.groupStageSchedule.tables[k].winBranch.root.data.roundNo);
+                let listWinMatches = [];
+                for (let i = 1; i <= data.Schedule.groupStageSchedule.tables[k].winBranch.root.data.roundNo; i++) {
+                  for (let j = 0; j < listWinMatchesFull.length; j++) {
+                    if ((listWinMatchesFull[j].data as unknown as IParams).roundNo === i) {
+                      listWinMatches.push(listWinMatchesFull[j]);
+                    }
+                  }
+                  listWinRound.push({ listWinMatches, roundName: data.Schedule.groupStageSchedule.tables[k].winRoundsNaming[i - 1] } as IParams);
+                  listWinMatches = [];
+                }
+                if (data.Schedule.groupStageSchedule.tables[k].loseBranch != null && data.Schedule.groupStageSchedule.tables[k].loseBranch.root != null) {
+                  yield call(DFS, data.Schedule.groupStageSchedule.tables[k].loseBranch.root, 3, data.Schedule.groupStageSchedule.tables[k].loseBranch.root.data.roundNo, 1);
+                  let listLoseMatches = [];
+                  for (let i = 1; i <= data.Schedule.groupStageSchedule.tables[k].loseBranch.root.data.roundNo; i++) {
+                    for (let j = 0; j < listLoseMatchesFull.length; j++) {
+                      if ((listLoseMatchesFull[j].data as unknown as IParams).roundNo === i) {
+                        listLoseMatches.push(listLoseMatchesFull[j]);
+                      }
+                    }
+                    listLoseRound.push({ listLoseMatches, roundName: data.Schedule.groupStageSchedule.tables[k].loseRoundsNaming[i - 1] } as IParams);
+                    listLoseMatches = [];
+                  }
+                }
+                listTableDE.push({ listWinRound, listLoseRound, tableName: data.Schedule.groupStageSchedule.tables[k].tableName });
+                listWinRound = [];
+                listWinMatchesFull = [];
+                listLoseRound = [];
+                listLoseMatchesFull = [];
+              }
+              tempVar2 = { groupStage: { listTableDE } };
+              listTableDE = [];
+            }
           }
-          tempVar2 = { groupStage: { listTableRR } };
-          listTableRR = [];
-        } else {
-          if (data.Schedule.GroupStageSchedule.WinBranch == null) {
-            for (let k = 0; k < data.Schedule.GroupStageSchedule.Tables.length; k++) {
-              if (data.Schedule.GroupStageSchedule.Tables[k].Bracket != null) {
-                yield call(DFS, data.Schedule.GroupStageSchedule.Tables[k].Bracket.root, 1, data.Schedule.GroupStageSchedule.Tables[k].Bracket.root.data.roundNo);
-                let listMatches: IParams[] = [];
-                for (let i = 1; i <= data.Schedule.GroupStageSchedule.Tables[k].Bracket.root.data.roundNo; i++) {
-                  for (let j = 0; j < listMatchesFull.length; j++) {
-                    if ((listMatchesFull[j].data as IParams).roundNo === i) {
-                      listMatches.push(listMatchesFull[j] as IParams);
-                    }
-                  }
-                  listRound.push({ listMatches } as IParams);
-                  listMatches = [];
-                }
-              }
-              listTableSE.push({ listRound, tableName: data.Schedule.GroupStageSchedule.Tables[k].Table } as IParams);
-              listRound = [];
-              listMatchesFull = [];
-            }
-            tempVar2 = { groupStage: { listTableSE } };
-            listTableSE = [];
-          } else { }
-
         }
       }
       yield put({

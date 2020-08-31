@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { IoMdAddCircleOutline } from 'react-icons/io';
+import ReduxBlockUi from 'react-block-ui/redux';
 import Select, { ValueType, OptionTypeBase } from 'react-select';
 import { RouteComponentProps } from 'react-router-dom';
 import * as H from 'history';
@@ -27,6 +28,8 @@ import config from 'config';
 import { onEditBracketMode, deleteListSelectingTeam } from 'components/BracketTeam/actions';
 import { queryAllCompetitionsByTournamentId } from 'components/CompetitionsSetting/actions';
 import { updateBackgroundTournament, updateAvatarTournament, queryTournamentInfo, querySportsByTournament, finishTournament, queryCompetitionsBySportAndTournament, startTournament } from './actions';
+import { START_TOURNAMENT, FINISH_TOURNAMENT } from 'redux-saga/actions';
+import { START_TOURNAMENT_SUCCESS, START_TOURNAMENT_FAILED, FINISH_TOURNAMENT_SUCCESS, FINISH_TOURNAMENT_FAILED } from './reducers';
 import './styles.css';
 
 interface ITournamentInfoProps extends React.ClassAttributes<TournamentInfo> {
@@ -502,63 +505,100 @@ class TournamentInfo extends React.Component<ITournamentInfoProps, ITournamentIn
 
   render() {
     return (
-      <div className="TournamentInfo-Container">
-        <div className="TournamentInfo-background-image-container">
-          <img className={'TournamentInfo-background-image'} src={require('../../assets/38155584462_74d5f1cc1d_b.jpg')} alt={'logo'} />
-          {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <AiFillCamera className={'TournamentInfo-change-image-icon'} />}
-          {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <div className={'TournamentInfo-Overlay'}>
-            <input type="file" onChange={(e) => this.updateBackground(e.target.files)} />
-          </div>}
-        </div>
-        <div className="TournamentInfo-content-container">
-          <div className="TournamentInfo-content-info-container">
-            <div className="TournamentInfo-content-info-basic-info-container">
-              <div className="TournamentInfo-content-info-basic-info-container-container">
-                <div className="TournamentInfo-content-info-basic-info-container-singleRow">
-                  <p className="TournamentInfo-name-text">{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? (this.props.tournamentInfo.Tournament as unknown as IParams).fullName : <Skeleton width={400} height={30} />}</p>
-                </div>
-                <div className="TournamentInfo-content-info-basic-info-container-singleRow">
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Tên ngắn: ${(this.props.tournamentInfo.Tournament as unknown as IParams).shortName}` : <Skeleton width={200} height={20} />}</p>
-                  </div>
-                </div>
-                <div className="TournamentInfo-content-info-basic-info-container-singleRow">
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Nhà tài trợ: ${(this.props.tournamentInfo.Tournament as unknown as IParams).donor}` : <Skeleton width={250} height={20} />}</p>
-                  </div>
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Trạng thái: ${((this.props.tournamentInfo.Tournament as unknown as IParams).status === 'processing' ? 'Đang diễn ra' : (this.props.tournamentInfo.status == null ? 'Chưa diễn ra' : 'Đã kết thúc'))}` : <Skeleton width={225} height={20} />}</p>
-                  </div>
-                </div>
-                <div className="TournamentInfo-content-info-basic-info-container-singleRow">
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Ngày bắt đầu: ${formatDateToDisplay((this.props.tournamentInfo.Tournament as unknown as IParams).openingTime as string | undefined, 'dd/MM/yyyy', 'yyyy-MM-dd')}` : <Skeleton width={250} height={20} />}</p>
-                  </div>
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Địa điểm khai mạc: ${(this.props.tournamentInfo.Tournament as unknown as IParams).openingLocation}` : <Skeleton width={275} height={20} />}</p>
-                  </div>
-                </div>
-                <div className="TournamentInfo-content-info-basic-info-container-singleRow">
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Ngày kết thúc: ${formatDateToDisplay((this.props.tournamentInfo.Tournament as unknown as IParams).closingTime as string | undefined, 'dd/MM/yyyy', 'yyyy-MM-dd')}` : <Skeleton width={250} height={20} />}</p>
-                  </div>
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Địa điểm bế mạc: ${(this.props.tournamentInfo.Tournament as unknown as IParams).closingLocation}` : <Skeleton width={275} height={20} />}</p>
-                  </div>
-                </div>
-                <div className="TournamentInfo-content-info-basic-info-container-singleRow">
-                  <div className="TournamentInfo-info-item">
-                    <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Mô tả: ${(this.props.tournamentInfo.Tournament as unknown as IParams).description}` : <Skeleton width={300} height={20} />}</p>
-                  </div>
-                </div>
-              </div>
-              <img className={'TournamentInfo-avatar-image'} src={require('../../assets/7ab1b0125d485c8dd6a4e78832b0a4b2fbed3cf8.png')} alt={'logo'} />
-              {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <AiFillCamera className={'TournamentInfo-change-avatar-icon'} />}
-              {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <div className={'TournamentInfo-Overlay2'}>
-                <input type="file" onChange={(e) => this.updateAvatar(e.target.files)} />
+      <ReduxBlockUi
+        tag="div"
+        block={START_TOURNAMENT}
+        unblock={[START_TOURNAMENT_SUCCESS, START_TOURNAMENT_FAILED]}
+      >
+        <ReduxBlockUi
+          tag="div"
+          block={FINISH_TOURNAMENT}
+          unblock={[FINISH_TOURNAMENT_SUCCESS, FINISH_TOURNAMENT_FAILED]}
+        >
+          <div className="TournamentInfo-Container">
+            <div className="TournamentInfo-background-image-container">
+              <img className={'TournamentInfo-background-image'} src={require('../../assets/38155584462_74d5f1cc1d_b.jpg')} alt={'logo'} />
+              {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <AiFillCamera className={'TournamentInfo-change-image-icon'} />}
+              {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <div className={'TournamentInfo-Overlay'}>
+                <input type="file" onChange={(e) => this.updateBackground(e.target.files)} />
               </div>}
             </div>
-            {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null &&
+            <div className="TournamentInfo-content-container">
+              <div className="TournamentInfo-content-info-container">
+                <div className="TournamentInfo-content-info-basic-info-container">
+                  <div className="TournamentInfo-content-info-basic-info-container-container">
+                    <div className="TournamentInfo-content-info-basic-info-container-singleRow">
+                      <p className="TournamentInfo-name-text">{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? (this.props.tournamentInfo.Tournament as unknown as IParams).fullName : <Skeleton width={400} height={30} />}</p>
+                    </div>
+                    <div className="TournamentInfo-content-info-basic-info-container-singleRow">
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Tên ngắn: ${(this.props.tournamentInfo.Tournament as unknown as IParams).shortName}` : <Skeleton width={200} height={20} />}</p>
+                      </div>
+                    </div>
+                    <div className="TournamentInfo-content-info-basic-info-container-singleRow">
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Nhà tài trợ: ${(this.props.tournamentInfo.Tournament as unknown as IParams).donor}` : <Skeleton width={250} height={20} />}</p>
+                      </div>
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Trạng thái: ${((this.props.tournamentInfo.Tournament as unknown as IParams).status === 'processing' ? 'Đang diễn ra' : (this.props.tournamentInfo.status == null ? 'Chưa diễn ra' : 'Đã kết thúc'))}` : <Skeleton width={225} height={20} />}</p>
+                      </div>
+                    </div>
+                    <div className="TournamentInfo-content-info-basic-info-container-singleRow">
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Ngày bắt đầu: ${formatDateToDisplay((this.props.tournamentInfo.Tournament as unknown as IParams).openingTime as string | undefined, 'dd/MM/yyyy', 'yyyy-MM-dd')}` : <Skeleton width={250} height={20} />}</p>
+                      </div>
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Địa điểm khai mạc: ${(this.props.tournamentInfo.Tournament as unknown as IParams).openingLocation}` : <Skeleton width={275} height={20} />}</p>
+                      </div>
+                    </div>
+                    <div className="TournamentInfo-content-info-basic-info-container-singleRow">
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Ngày kết thúc: ${formatDateToDisplay((this.props.tournamentInfo.Tournament as unknown as IParams).closingTime as string | undefined, 'dd/MM/yyyy', 'yyyy-MM-dd')}` : <Skeleton width={250} height={20} />}</p>
+                      </div>
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Địa điểm bế mạc: ${(this.props.tournamentInfo.Tournament as unknown as IParams).closingLocation}` : <Skeleton width={275} height={20} />}</p>
+                      </div>
+                    </div>
+                    <div className="TournamentInfo-content-info-basic-info-container-singleRow">
+                      <div className="TournamentInfo-info-item">
+                        <p>{this.props.tournamentInfo != null && this.props.tournamentInfo.Tournament ? `Mô tả: ${(this.props.tournamentInfo.Tournament as unknown as IParams).description}` : <Skeleton width={300} height={20} />}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <img className={'TournamentInfo-avatar-image'} src={require('../../assets/7ab1b0125d485c8dd6a4e78832b0a4b2fbed3cf8.png')} alt={'logo'} />
+                  {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <AiFillCamera className={'TournamentInfo-change-avatar-icon'} />}
+                  {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null && ((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true && <div className={'TournamentInfo-Overlay2'}>
+                    <input type="file" onChange={(e) => this.updateAvatar(e.target.files)} />
+                  </div>}
+                </div>
+                {this.props.tournamentInfo != null && this.props.tournamentInfo.Config != null && this.props.tournamentInfo.Tournament != null &&
+                  ((this.props.tournamentInfo.Config as IParams).canEdit === true ?
+                    ((this.props.tournamentInfo.Tournament as IParams).status === 'initializing' ?
+                      <div className="TournamentInfo-login-container">
+                        <div
+                          className="TournamentInfo-login"
+                          onClick={this.handleStartTournament}
+                        >
+                          <h4 className="TournamentInfo-login-text">Bắt đầu giải</h4>
+                        </div>
+                      </div> : ((this.props.tournamentInfo.Tournament as IParams).status === 'processing' ?
+                        <div className="TournamentInfo-login-container">
+                          <div
+                            className="TournamentInfo-login"
+                            onClick={this.handleFinishTournament}
+                          >
+                            <h4 className="TournamentInfo-login-text">Kết thúc giải</h4>
+                          </div>
+                        </div> : null)) : (cookies.get(COOKIES_TYPE.AUTH_TOKEN) != null && (this.props.tournamentInfo.Tournament as IParams).status === 'opening' && <div className="TournamentInfo-login-container">
+                          <div
+                            className="TournamentInfo-login"
+                            onClick={this.handleJoinTournament}
+                          >
+                            <h4 className="TournamentInfo-login-text">Tham gia giải</h4>
+                          </div>
+                        </div>))
+                }
+                {/* {this.props.tournamentInfo != null && (this.props.tournamentInfo as IParams).Config != null &&
               (((this.props.tournamentInfo as unknown as IParams).Config as unknown as IParams).canEdit === true ?
                 (this.props.tournamentInfo.Tournament != null && (
                   (this.props.tournamentInfo.Tournament as unknown as IParams).status === 'initializing' ?
@@ -588,121 +628,83 @@ class TournamentInfo extends React.Component<ITournamentInfoProps, ITournamentIn
                   </div>
                 </div>)
               ))
-            }
-            {/* <ReduxBlockUi
-              tag="div"
-              block={QUERY_SPORTS_BY_TOURNAMENT}
-              unblock={[QUERY_SPORTS_BY_TOURNAMENT_SUCCESS, QUERY_SPORTS_BY_TOURNAMENT_FAILED]}
-            >
-              <ReduxBlockUi
-                tag="div"
-                block={QUERY_COMPETITIONS_BY_SPORT_AND_TOURNAMENT}
-                unblock={[QUERY_COMPETITIONS_BY_SPORT_AND_TOURNAMENT_SUCCESS, QUERY_COMPETITIONS_BY_SPORT_AND_TOURNAMENT_FAILED]}
-              >
-                <div className="TournamentInfo-content-info-basic-info-container-container TournamentInfo-oddBackground" style={{ width: '96%' }}>
-                  <div className="TournamentInfo-content-info-basic-info-container-singleRow">
-                    <p className="TournamentInfo-name-text">Các cuộc thi trong giải</p>
-                    <div className="TournamentInfo-info-item">
-                      <p className="TournamentInfo-text">Bộ môn</p>
-                      <Select
-                        options={sportOptions}
-                        className="Select"
-                        defaultValue={this.state.selectedSport}
-                        value={this.state.selectedSport}
-                        onChange={this.onChangeSport}
-                        menuPlacement={'top'}
-                      />
-                    </div>
-                    <div className="TournamentInfo-info-item">
-                      <p className="TournamentInfo-text">Cuộc thi thuộc bộ môn</p>
-                      <Select
-                        options={competitionOptions}
-                        className={`Select ${this.state.selectedSport == null && `Select-disabled`}`}
-                        defaultValue={this.state.selectedCompetition}
-                        value={this.state.selectedCompetition}
-                        onChange={this.onChangeCompetition}
-                        isDisabled={this.state.selectedSport == null}
-                        menuPlacement={'top'}
-                      />
-                    </div>
+            } */}
+                {this.props.tournamentInfo != null &&
+                  <div className="TournamentInfo-content-info-advanced-info-container">
+                    <CustomTab tabList={this.tabList} componentList={this.componentList} selectedIndex={0}></CustomTab>
                   </div>
-                </div>
-              </ReduxBlockUi>
-            </ReduxBlockUi> */}
-            {this.props.tournamentInfo != null &&
-              <div className="TournamentInfo-content-info-advanced-info-container">
-                <CustomTab tabList={this.tabList} componentList={this.componentList} selectedIndex={0}></CustomTab>
+                }
               </div>
-            }
+            </div>
+            <CustomModal
+              customStyles={customStyles}
+              handleCloseModal={this.handleCloseModal}
+              showModal={this.state.showJoinModal}
+              handleConfirmModal={this.handleConfirmModal}
+            >
+              <div className={'TournamentInfo-join-tournament-form-competition-header'}>
+                <h3>Form đăng ký dự thi</h3>
+              </div>
+              <div className={'TournamentInfo-join-tournament-form-competition-option'}>
+                <p>Chọn cuộc thi</p>
+                <Select
+                  options={allCompetitionOptions}
+                  className="Select"
+                  defaultValue={this.state.selectedCompetitionInForm}
+                  value={this.state.selectedCompetitionInForm}
+                  onChange={this.onChangeSelectedCompetitionInForm}
+                  maxMenuHeight={140}
+                />
+                {this.state.selectedCompetitionInFormError === true && <p style={{ color: 'red' }}>{this.state.selectedCompetitionInFormErrorContent}</p>}
+              </div>
+              <TextInput label={'Tên đội'} value={this.state.teamNameInForm} onChangeText={this.onChangeTeamNameInForm} error={this.state.teamNameInFormError} errorContent={this.state.teamNameInFormErrorContent} />
+              <TextInput label={'Tên ngắn đội'} value={this.state.teamShortNameInForm} onChangeText={this.onChangeTeamShortNameInForm} error={this.state.teamShortNameInFormError} errorContent={this.state.teamShortNameInFormErrorContent} />
+              <div className="TournamentInfo-join-tournament-container">
+                <div className="TournamentInfo-join-tournament-item1">
+                  <p>Tên</p>
+                </div>
+                <div className="TournamentInfo-join-tournament-item2">
+                  <p>Giới tính</p>
+                </div>
+                <div className="TournamentInfo-join-tournament-item2">
+                  <p>Tuổi</p>
+                </div>
+                <div className="TournamentInfo-join-tournament-item1">
+                  <p>Email</p>
+                </div>
+                <div className="TournamentInfo-join-tournament-setting">
+                </div>
+              </div>
+              {this.state.listPlayerInForm.map((item, index) => <Player onDelete={this.onDeletePlayer} info={item} freeToEdit={true} key={index} index={index} />)}
+              <div className="TournamentInfo-join-tournament-container">
+                <div className="TournamentInfo-join-tournament-item1">
+                  <input type={'text'} onChange={this.onChangePlayerNameInForm} value={this.state.playerNameInForm} />
+                </div>
+                <div className="TournamentInfo-join-tournament-item2">
+                  <Select
+                    options={genderOptions}
+                    className="Select"
+                    defaultValue={this.state.playerGenderInForm}
+                    value={this.state.playerGenderInForm}
+                    onChange={this.onChangePlayerGenderInForm}
+                  />
+                </div>
+                <div className="TournamentInfo-join-tournament-item2">
+                  <input style={{ width: '70px' }} type={'text'} onChange={this.onChangePlayerAgeInForm} value={this.state.playerAgeInForm} />
+                </div>
+                <div className="TournamentInfo-join-tournament-item1">
+                  <input type={'text'} onChange={this.onChangePlayerEmailInForm} value={this.state.playerEmailInForm} />
+                </div>
+                <div className="TournamentInfo-join-tournament-setting">
+                  <IoMdAddCircleOutline color={'white'} size={25} style={{ marginLeft: '3px', marginRight: '3px' }} onClick={this.addPlayer} />
+                </div>
+              </div>
+              {this.state.playerNameInFormError === true && <p style={{ color: 'red' }}>{this.state.playerNameInFormErrorContent}</p>}
+              {this.state.playerEmailInFormError === true && <p style={{ color: 'red' }}>{this.state.playerEmailInFormErrorContent}</p>}
+            </CustomModal>
           </div>
-        </div>
-        <CustomModal
-          customStyles={customStyles}
-          handleCloseModal={this.handleCloseModal}
-          showModal={this.state.showJoinModal}
-          handleConfirmModal={this.handleConfirmModal}
-        >
-          <div className={'TournamentInfo-join-tournament-form-competition-header'}>
-            <h3>Form đăng ký dự thi</h3>
-          </div>
-          <div className={'TournamentInfo-join-tournament-form-competition-option'}>
-            <p>Chọn cuộc thi</p>
-            <Select
-              options={allCompetitionOptions}
-              className="Select"
-              defaultValue={this.state.selectedCompetitionInForm}
-              value={this.state.selectedCompetitionInForm}
-              onChange={this.onChangeSelectedCompetitionInForm}
-              maxMenuHeight={140}
-            />
-            {this.state.selectedCompetitionInFormError === true && <p style={{ color: 'red' }}>{this.state.selectedCompetitionInFormErrorContent}</p>}
-          </div>
-          <TextInput label={'Tên đội'} value={this.state.teamNameInForm} onChangeText={this.onChangeTeamNameInForm} error={this.state.teamNameInFormError} errorContent={this.state.teamNameInFormErrorContent} />
-          <TextInput label={'Tên ngắn đội'} value={this.state.teamShortNameInForm} onChangeText={this.onChangeTeamShortNameInForm} error={this.state.teamShortNameInFormError} errorContent={this.state.teamShortNameInFormErrorContent} />
-          <div className="TournamentInfo-join-tournament-container">
-            <div className="TournamentInfo-join-tournament-item1">
-              <p>Tên</p>
-            </div>
-            <div className="TournamentInfo-join-tournament-item2">
-              <p>Giới tính</p>
-            </div>
-            <div className="TournamentInfo-join-tournament-item2">
-              <p>Tuổi</p>
-            </div>
-            <div className="TournamentInfo-join-tournament-item1">
-              <p>Email</p>
-            </div>
-            <div className="TournamentInfo-join-tournament-setting">
-            </div>
-          </div>
-          {this.state.listPlayerInForm.map((item, index) => <Player onDelete={this.onDeletePlayer} info={item} freeToEdit={true} key={index} index={index} />)}
-          <div className="TournamentInfo-join-tournament-container">
-            <div className="TournamentInfo-join-tournament-item1">
-              <input type={'text'} onChange={this.onChangePlayerNameInForm} value={this.state.playerNameInForm} />
-            </div>
-            <div className="TournamentInfo-join-tournament-item2">
-              <Select
-                options={genderOptions}
-                className="Select"
-                defaultValue={this.state.playerGenderInForm}
-                value={this.state.playerGenderInForm}
-                onChange={this.onChangePlayerGenderInForm}
-              />
-            </div>
-            <div className="TournamentInfo-join-tournament-item2">
-              <input style={{ width: '70px' }} type={'text'} onChange={this.onChangePlayerAgeInForm} value={this.state.playerAgeInForm} />
-            </div>
-            <div className="TournamentInfo-join-tournament-item1">
-              <input type={'text'} onChange={this.onChangePlayerEmailInForm} value={this.state.playerEmailInForm} />
-            </div>
-            <div className="TournamentInfo-join-tournament-setting">
-              <IoMdAddCircleOutline color={'white'} size={25} style={{ marginLeft: '3px', marginRight: '3px' }} onClick={this.addPlayer} />
-            </div>
-          </div>
-          {this.state.playerNameInFormError === true && <p style={{ color: 'red' }}>{this.state.playerNameInFormErrorContent}</p>}
-          {this.state.playerEmailInFormError === true && <p style={{ color: 'red' }}>{this.state.playerEmailInFormErrorContent}</p>}
-        </CustomModal>
-      </div>
+        </ReduxBlockUi>
+      </ReduxBlockUi>
     );
   }
 }

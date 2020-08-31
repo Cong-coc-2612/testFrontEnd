@@ -9,7 +9,7 @@ interface IBracketTeamProps extends React.ClassAttributes<BracketTeam> {
   info: IParams | null;
   borderBottom?: boolean;
   hoveringTeam: number | null;
-  description: IParams;
+  description: IParams | null;
   listTeam: IParams[] | null;
   editBracketMode: boolean;
   listTeamSelecting: number[];
@@ -56,7 +56,7 @@ class BracketTeam extends React.Component<IBracketTeamProps, IBracketTeamState> 
             className={'BracketTeam-name-container-container'}
             onClick={() => {
               // thêm đk check giải đấu còn ở trạn thái unStarted hay ko
-              if (this.props.description != null && this.props.description.descType === 0) {
+              if (this.props.description != null && this.props.description.descType === 0 && this.props.info == null) {
                 this.props.addListTeamSelecting({
                   listTeamId: [...this.props.listTeamSelecting, this.props.listTeam![(this.props.description.unitIndex as number) - 1].id as number],
                   competitionId: this.props.competitionId,

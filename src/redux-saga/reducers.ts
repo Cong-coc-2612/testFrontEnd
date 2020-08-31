@@ -17,6 +17,8 @@ import { ActiveAccountStatus } from 'screens/ActiveAccount/reducers';
 import { GlobalSearchString } from './global-reducers/GlobalSearchString-reducer';
 import { ListUsers } from 'components/AllUsers/reducers';
 import { CompetitionInfo, AllSports, SportInfo, GroupStageSetting, FinalStageSetting, AllFormats } from 'screens/CompetitionInfo/reducers';
+import { BracketRankInfo } from 'components/BracketRank/reducers';
+import { MatchResult } from 'components/BracketMatch/reducers';
 
 export const appReducer = combineReducers({
   currentPage: CurrentPage,
@@ -48,6 +50,8 @@ export const appReducer = combineReducers({
   finalStageSetting: FinalStageSetting,
   allFormats: AllFormats,
   newCompetition: NewCompetition,
+  bracketRankInfo: BracketRankInfo,
+  matchResult: MatchResult,
 });
 
 export type IState = ReturnType<typeof appReducer>;

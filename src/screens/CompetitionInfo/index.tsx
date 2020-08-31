@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { Styles } from 'react-modal';
+import Skeleton from 'react-loading-skeleton';
 import { RouteComponentProps } from 'react-router-dom';
 import * as H from 'history';
 import { StaticContext } from 'react-router';
@@ -22,18 +23,19 @@ import './styles.css';
 import CustomModal from 'components/CustomModal';
 import TextInput from 'components/TextInput';
 import { IBigRequest, IParams } from 'interfaces/common';
-import Skeleton from 'react-loading-skeleton';
 import CustomTab from 'components/CustomTab';
-import config from 'config';
 import Player from 'components/Player';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import { queryAllCompetitionsByTournamentId } from 'components/CompetitionsSetting/actions';
 import BracketBoard from 'components/BracketBoard';
+import Teams from 'components/Teams';
+import BracketSchedule from 'components/BracketSchedule';
+import BracketRank from 'components/BracketRank';
 import { queryTournamentInfo } from 'screens/TournamentInfo/actions';
+import config from 'config';
 import { formatTournamentStatus } from 'utils/common';
 import { cookies } from 'utils/cookies';
 import { COOKIES_TYPE } from 'global';
-import Teams from 'components/Teams';
 
 interface ICompetitionInfoProps extends React.ClassAttributes<CompetitionInfo> {
   routerInfo: RouteComponentProps<any, StaticContext, H.LocationState>;
@@ -226,21 +228,29 @@ class CompetitionInfo extends React.Component<ICompetitionInfoProps, ICompetitio
       if ((nextProps.competitionInfo.Competition as IParams).hasGroupStage === false) {
         this.tabList = [
           'Nhánh thi đấu vòng chung kết',
+          'Lịch thi đấu vòng chung kết',
+          'BXH vòng chung kết',
           'Các đội tham gia'
         ];
         this.componentList = [
           <BracketBoard competitionId={this.props.routerInfo.match.params.competitionId} finalStage={true} />,
+          <BracketSchedule competitionId={this.props.routerInfo.match.params.competitionId} finalStage={true} />,
+          <BracketRank competitionId={this.props.routerInfo.match.params.competitionId} finalStage={true} />,
           <Teams competitionInfo={nextProps.competitionInfo} tournamentInfo={nextProps.tournamentInfo} id={(nextProps.competitionInfo.Competition as unknown as IParams).id as number} type={'competition'} />
         ];
       } else {
         this.tabList = [
           'Nhánh thi đấu vòng bảng',
+          'Lịch thi đấu vòng bảng',
           'Nhánh thi đấu vòng chung kết',
+          'Lịch thi đấu vòng chung kết',
           'Các đội tham gia'
         ];
         this.componentList = [
           <BracketBoard competitionId={this.props.routerInfo.match.params.competitionId} finalStage={false} />,
+          <BracketSchedule competitionId={this.props.routerInfo.match.params.competitionId} finalStage={false} />,
           <BracketBoard competitionId={this.props.routerInfo.match.params.competitionId} finalStage={true} />,
+          <BracketSchedule competitionId={this.props.routerInfo.match.params.competitionId} finalStage={true} />,
           <Teams competitionInfo={nextProps.competitionInfo} tournamentInfo={nextProps.tournamentInfo} id={(nextProps.competitionInfo.Competition as unknown as IParams).id as number} type={'competition'} />
         ];
       }
@@ -882,7 +892,7 @@ class CompetitionInfo extends React.Component<ICompetitionInfoProps, ICompetitio
                     </div>))}
               </div>
             </div>
-            {(this.state.onEditMode === false
+            {/* {(this.state.onEditMode === false
               ?
               <div className="CompetitionInfo-login-container">
                 <div
@@ -898,7 +908,7 @@ class CompetitionInfo extends React.Component<ICompetitionInfoProps, ICompetitio
                 >
                   <h4 className="CompetitionInfo-login-text">Lưu chỉnh sửa</h4>
                 </div>
-              </div>)}
+              </div>)} */}
             {this.props.competitionInfo != null && this.props.competitionInfo.Competition != null && this.props.competitionInfo.Config != null && cookies.get(COOKIES_TYPE.AUTH_TOKEN) != null && ((this.props.competitionInfo.Config as unknown as IParams).canEdit !== true ?
               ((this.props.competitionInfo.Competition as unknown as IParams).status === 'opening' &&
                 <div className="CompetitionInfo-login-container">

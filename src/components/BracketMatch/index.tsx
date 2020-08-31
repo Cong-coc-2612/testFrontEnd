@@ -5,9 +5,12 @@ import 'react-tabs/style/react-tabs.css';
 import { MdSettings } from 'react-icons/md';
 import BracketTeam from 'components/BracketTeam';
 import CustomModal from 'components/CustomModal';
+import CustomTab from 'components/CustomTab';
+import MatchDetail from 'components/MatchDetail';
+import MatchSetting from 'components/MatchSetting';
 import { IState } from 'redux-saga/reducers';
-import { IParams } from 'interfaces/common';
-import { MATCH_CONTAINER_HEIGHT } from 'global';
+import { IParams, IBigRequest } from 'interfaces/common';
+import { MATCH_CONTAINER_HEIGHT, PADDING_TOP } from 'global';
 import './styles.css';
 
 interface IBracketMatchProps extends React.ClassAttributes<BracketMatch> {
@@ -28,8 +31,8 @@ interface IBracketMatchState {
 const customStyles: Styles = {
   content: {
     top: '15%',
-    left: '15%',
-    right: '15%',
+    left: '25%',
+    right: '25%',
     bottom: '15%',
     backgroundColor: '#2b303d',
     display: 'flex',
@@ -74,8 +77,11 @@ class BracketMatch extends React.Component<IBracketMatchProps, IBracketMatchStat
     //     amountOfListTeamDisplayed++;
     //   }
     // }
-    // const tabList = ['Match Detail', 'Match Setting'];
-    // const tabComponentList = [<MatchDetail />, <MatchSetting />];
+    let listTeam: IParams[] = [];
+    listTeam.push((this.props.info.data as IParams).team1 as IParams);
+    listTeam.push((this.props.info.data as IParams).team2 as IParams);
+    const tabList = ['Thông tin trận đấu', 'Điểm số'];
+    const tabComponentList = [<MatchDetail info={this.props.info.data as IParams} />, <MatchSetting teamsInfo={listTeam} info={this.props.info.data as IParams} />];
     // if (this.props.info.listTeam.length === amountOfListTeamDisplayed && this.props.bracketStartedStatus === true) {
     //   tabComponentList.push(<MatchResult teamsInfo={this.props.info.listTeam}/>);
     //   tabList.push('Match Result');
@@ -95,8 +101,8 @@ class BracketMatch extends React.Component<IBracketMatchProps, IBracketMatchStat
             <p className={'BracketMatch-info-text No-margin-bottom'}>{this.props.info.time}</p>
             <div className="BracketMatch-teams-container" onMouseOver={() => { this.setState({ iconVisible: true, }); }} onMouseOut={() => { this.setState({ iconVisible: false, }); }}>
               <div className="BracketMatch-team-container">
-                <BracketTeam competitionId={this.props.competitionId} info={(this.props.info.team1 as IParams).team as unknown as IParams} description={(this.props.info.team1 as unknown as IParams).description as unknown as IParams} borderBottom={true} />
-                <BracketTeam competitionId={this.props.competitionId} info={(this.props.info.team2 as unknown as IParams).team as unknown as IParams} description={(this.props.info.team2 as unknown as IParams).description as unknown as IParams} />
+                <BracketTeam competitionId={this.props.competitionId} info={this.props.info.team1 != null ? (this.props.info.team1 as IParams).team as IParams : null} description={this.props.info.team1 != null ? (this.props.info.team1 as IParams).description as IParams : null} borderBottom={true} />
+                <BracketTeam competitionId={this.props.competitionId} info={this.props.info.team2 != null ? (this.props.info.team2 as IParams).team as IParams : null} description={this.props.info.team2 != null ? (this.props.info.team2 as IParams).description as IParams : null} />
               </div>
               <div className="BracketMatch-matchSetting-container">
                 <div className={`BracketMatch-afterMatch-icon-container ${this.state.iconVisible === true && 'BracketMatch-afterMatch-icon-container-background'}`} onClick={() => this.handleOpenModal(0)}>
@@ -124,32 +130,42 @@ class BracketMatch extends React.Component<IBracketMatchProps, IBracketMatchStat
           {((this.props.info.data as unknown as IParams).roundNo as number) > 1 &&
             <div
               className="BracketMatch-preMatch-connector"
-            style={{ height: `${(MATCH_CONTAINER_HEIGHT / 4) * (2 ** ((this.props.info.data as unknown as IParams).roundNo as number))}px` }}
+              style={{ height: `${(MATCH_CONTAINER_HEIGHT / 4) * (2 ** ((this.props.info.data as unknown as IParams).roundNo as number))}px` }}
             >
               {/* height=số đội trong 1 match * 25px / 2 + 2 */}
-            <div className={`${this.props.info.left != null && (this.props.info.left as unknown as IParams).id !== -1 && 'BracketMatch-preMatch-connector-border1'} ${((this.props.info.left != null && (this.props.info.left as unknown as IParams).id !== -1) || (this.props.info.right != null && (this.props.info.right as unknown as IParams).id !== -1)) && 'BracketMatch-preMatch-connector-borderrr'} BracketMatch-preMatch-connector-borderr`}></div>
-            <div className={`${this.props.info.right != null && (this.props.info.right as unknown as IParams).id !== -1 && 'BracketMatch-preMatch-connector-border2-border'} BracketMatch-preMatch-connector-border2`}></div>
+              <div className={`${this.props.info.left != null && (this.props.info.left as unknown as IParams).id !== -1 && 'BracketMatch-preMatch-connector-border1'} ${((this.props.info.left != null && (this.props.info.left as unknown as IParams).id !== -1) || (this.props.info.right != null && (this.props.info.right as unknown as IParams).id !== -1)) && 'BracketMatch-preMatch-connector-borderrr'} BracketMatch-preMatch-connector-borderr`}></div>
+              <div className={`${this.props.info.right != null && (this.props.info.right as unknown as IParams).id !== -1 && 'BracketMatch-preMatch-connector-border2-border'} BracketMatch-preMatch-connector-border2`}></div>
             </div>}
           {this.props.info.id !== -1 &&
             <div className="BracketMatch-numericalOrder-container">
-            <p className="BracketMatch-numericalOrder-text">{(this.props.info.data as unknown as IParams).name}</p>
+              <p className="BracketMatch-numericalOrder-text">{(this.props.info.data as unknown as IParams).name}</p>
             </div>
           }
-          {this.props.info.id !== -1 && <div className="BracketMatch-info-container">
-            <p className={'BracketMatch-info-text No-margin-bottom'}>{this.props.info.time}</p>
-            <div className="BracketMatch-teams-container" onMouseOver={() => { this.setState({ iconVisible: true, }); }} onMouseOut={() => { this.setState({ iconVisible: false, }); }}>
-              <div className="BracketMatch-team-container">
-                <BracketTeam competitionId={this.props.competitionId} info={((this.props.info.data as unknown as IParams).team1 as unknown as IParams).team as unknown as IParams} description={((this.props.info.data as unknown as IParams).team1 as unknown as IParams).description as unknown as IParams} borderBottom={true} />
-                <BracketTeam competitionId={this.props.competitionId} info={((this.props.info.data as unknown as IParams).team2 as unknown as IParams).team as unknown as IParams} description={((this.props.info.data as unknown as IParams).team2 as unknown as IParams).description as unknown as IParams} />
-              </div>
-              <div className="BracketMatch-matchSetting-container">
-                <div className={`BracketMatch-afterMatch-icon-container ${this.state.iconVisible === true && 'BracketMatch-afterMatch-icon-container-background'}`} onClick={() => this.handleOpenModal(0)}>
-                  <MdSettings className={`BracketMatch-afterMatch-icon-setting ${this.state.iconVisible === true ? 'BracketMatch-afterMatch-icon-visible' : 'BracketMatch-afterMatch-icon-invisible'}`} />
+          {this.props.info.id !== -1 &&
+            <div className="BracketMatch-info-container">
+              <p className={'BracketMatch-info-text No-margin-bottom'}>{this.props.info.time}</p>
+              <div className="BracketMatch-teams-container" onMouseOver={() => { this.setState({ iconVisible: true, }); }} onMouseOut={() => { this.setState({ iconVisible: false, }); }}>
+                <div className="BracketMatch-team-container">
+                  <BracketTeam
+                    competitionId={this.props.competitionId}
+                    info={(this.props.info.data as unknown as IParams).team1 != null ? ((this.props.info.data as IParams).team1 as IParams).team as IParams : null}
+                    description={(this.props.info.data as unknown as IParams).team1 != null ? ((this.props.info.data as unknown as IParams).team1 as unknown as IParams).description as IParams : null}
+                    borderBottom={true}
+                  />
+                  <BracketTeam
+                    competitionId={this.props.competitionId}
+                    info={(this.props.info.data as IParams).team2 != null ? ((this.props.info.data as IParams).team2 as unknown as IParams).team as IParams : null}
+                    description={(this.props.info.data as IParams).team2 != null ? ((this.props.info.data as unknown as IParams).team2 as IParams).description as IParams : null}
+                  />
+                </div>
+                <div className="BracketMatch-matchSetting-container">
+                  <div className={`BracketMatch-afterMatch-icon-container ${this.state.iconVisible === true && 'BracketMatch-afterMatch-icon-container-background'}`} onClick={() => this.handleOpenModal(0)}>
+                    <MdSettings className={`BracketMatch-afterMatch-icon-setting ${this.state.iconVisible === true ? 'BracketMatch-afterMatch-icon-visible' : 'BracketMatch-afterMatch-icon-invisible'}`} />
+                  </div>
                 </div>
               </div>
-            </div>
-            <p className={'BracketMatch-info-text No-margin-top'}>{this.props.info.location}</p>
-          </div>}
+              <p className={'BracketMatch-info-text No-margin-top'}>{this.props.info.location}</p>
+            </div>}
           {
             ((this.props.info.data as unknown as IParams).roundNo as number) < this.props.totalRound && this.props.info.id !== -1 && <div
               // ((this.props.info.data as IParams).roundNo as number) nhỏ hơn tổng số round
@@ -166,7 +182,7 @@ class BracketMatch extends React.Component<IBracketMatchProps, IBracketMatchStat
             handleCloseModal={this.handleCloseModal}
             showModal={this.state.showModal}
             handleConfirmModal={this.handleConfirmModal}>
-            {/* <CustomTab tabList={tabList} componentList={tabComponentList} selectedIndex={this.state.selectedIndexInTab} /> */}
+            <CustomTab tabList={tabList} componentList={tabComponentList} selectedIndex={0} />
           </CustomModal>
         </div>
       );
@@ -187,7 +203,7 @@ class BracketMatch extends React.Component<IBracketMatchProps, IBracketMatchStat
             left: (((this.props.info.data as unknown as IParams).roundNo as number) - 1) === 0 ?
               0 :
               ((((this.props.info.data as unknown as IParams).roundNo as number) - 2) * 250) + 250,
-            marginTop: (fakeId - firstId) * treeHeight + firstLocation,
+            marginTop: (fakeId - firstId) * treeHeight + firstLocation + PADDING_TOP,
           }}
         >
           <div
@@ -199,16 +215,16 @@ class BracketMatch extends React.Component<IBracketMatchProps, IBracketMatchStat
             {/* height=số đội trong 1 match * 25px / 2 + 2 */}
             <div className={`${
               (
-              !((this.props.info.data as unknown as IParams).roundNo === this.props.totalRound &&
+                !((this.props.info.data as unknown as IParams).roundNo === this.props.totalRound &&
                   this.props.lowerBracket === true) &&
                 this.props.info.left != null &&
                 (this.props.info.left as unknown as IParams).id !== -1 &&
-              !(((this.props.info.left as unknown as IParams).data as unknown as IParams).name as string).includes('A')) &&
+                !(((this.props.info.left as unknown as IParams).data as unknown as IParams).name as string).includes('A')) &&
               'BracketMatch-preMatch-connector-border1'} ${
               ((
                 this.props.info.left != null &&
                 (this.props.info.left as unknown as IParams).id !== -1)) &&
-            ((this.props.info.data as unknown as IParams).roundNo as number) > 1 &&
+              ((this.props.info.data as unknown as IParams).roundNo as number) > 1 &&
               'BracketMatch-preMatch-connector-borderrr'
               } BracketMatch-preMatch-connector-borderr`
             }></div>
@@ -216,12 +232,12 @@ class BracketMatch extends React.Component<IBracketMatchProps, IBracketMatchStat
               !((this.props.info.data as unknown as IParams).roundNo === this.props.totalRound &&
                 this.props.lowerBracket === true) &&
               this.props.info.right != null &&
-            (this.props.info.right as unknown as IParams).id !== -1 &&
+              (this.props.info.right as unknown as IParams).id !== -1 &&
               'BracketMatch-preMatch-connector-border2-border'} BracketMatch-preMatch-connector-border2`}></div>
           </div>
           {this.props.info.id !== -1 &&
             <div className="BracketMatch-numericalOrder-container">
-            <p className="BracketMatch-numericalOrder-text">{(this.props.info.data as unknown as IParams).name}</p>
+              <p className="BracketMatch-numericalOrder-text">{(this.props.info.data as IParams).name}</p>
             </div>
           }
           {this.props.info.id !== -1 && <div className="BracketMatch-info-container">

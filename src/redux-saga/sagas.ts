@@ -44,6 +44,10 @@ import { editGroupStageSetting } from './sagas/EditGroupStageSetting';
 import { createAFinalStageSetting } from './sagas/CreateAFinalStageSetting';
 import { createAGroupStageSetting } from './sagas/CreateAGroupStageSetting';
 import { updateSchedule } from './sagas/UpdateSchedule';
+import { queryBracketRankInfo } from './sagas/BracketRank';
+import { deleteCompetition } from './sagas/DeleteCompetition';
+import { startTournament } from './sagas/StartTournament';
+import { getMatchResult } from './sagas/GetMatchResult';
 
 export default function* () {
   yield all([
@@ -92,5 +96,9 @@ export default function* () {
     createAFinalStageSetting(),
     createAGroupStageSetting(),
     updateSchedule(),
+    queryBracketRankInfo(),
+    deleteCompetition(),
+    startTournament(),
+    getMatchResult(),
   ]);
 }

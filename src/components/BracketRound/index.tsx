@@ -28,7 +28,7 @@ class BracketRound extends React.Component<IBracketRoundProps, IBracketRoundStat
   render() {
     if (this.props.roundRobin === true) {
       return (
-        <div className={`BracketRound-eachRound ${this.state.roundHover === true ? 'BracketRound-reachRound-bolder' : 'BracketRound-eachRound-noBold'}`} style={{ ...this.props.info.listLoseMatches != null && { width: '250px', height: '500px' } }}>
+        <div className={`BracketRound-eachRound ${this.state.roundHover === true ? 'BracketRound-reachRound-bolder' : 'BracketRound-eachRound-noBold'}`} style={{ ...this.props.info.listLoseMatches != null && { width: '250px' } }}>
           <div className={`BracketRound-title-round-container ${this.props.roundNo > 1 && 'BracketRound-title-round-container-border'}`} onMouseOver={() => { this.setState({ roundHover: true, }); }} onMouseOut={() => { this.setState({ roundHover: false, }); }}>
             <p className="BracketRound-title-round-text">{this.props.info.roundName}</p>
           </div>
@@ -49,7 +49,7 @@ class BracketRound extends React.Component<IBracketRoundProps, IBracketRoundStat
       );
     } else {
       return (
-        <div className={`BracketRound-eachRound ${this.state.roundHover === true ? 'BracketRound-reachRound-bolder' : 'BracketRound-eachRound-noBold'}`} style={{ ...this.props.info.listLoseMatches != null && { width: '250px', height: '500px' } }}>
+        <div className={`BracketRound-eachRound ${this.state.roundHover === true ? 'BracketRound-reachRound-bolder' : 'BracketRound-eachRound-noBold'}`} style={{ ...this.props.info.listLoseMatches != null && { width: '250px', height: '350px' } }}>
           <div className={`BracketRound-title-round-container ${this.props.roundNo > 1 && 'BracketRound-title-round-container-border'}`} onMouseOver={() => { this.setState({ roundHover: true, }); }} onMouseOut={() => { this.setState({ roundHover: false, }); }}>
             <p className="BracketRound-title-round-text">{this.props.info.roundName}</p>
           </div>
@@ -62,7 +62,7 @@ class BracketRound extends React.Component<IBracketRoundProps, IBracketRoundStat
               return (<BracketMatch competitionId={this.props.competitionId} info={item} key={index} totalRound={this.props.totalRound} lowerBracket={true} />);
             }))
           }
-          {this.props.info.listLoseMatches != null && <svg style={{ position: 'absolute', marginTop: '20px', width: '1px', height: '500px', backgroundColor: 'red', }}>
+          {this.props.info.listLoseMatches != null && <svg style={{ position: 'absolute', marginTop: '20px', width: '1px', height: '350px', backgroundColor: 'red', }}>
             <path d="M 228 1 L 236 1 L 236 108"></path>
           </svg>}
         </div>

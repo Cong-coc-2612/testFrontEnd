@@ -42,7 +42,7 @@ export interface IConfig {
 let config: IConfig = {
   apiUrl: {
     // baseURI: 'http://172.20.10.8:8090/',nham'11
-    baseURI: 'http://192.168.1.119:8090/',
+    baseURI: 'http://localhost:8090/',
     // baseURI: 'http://192.168.43.170:8090/',long sama
     tradeX: {},
     domain: {},
